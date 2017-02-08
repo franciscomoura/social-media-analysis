@@ -11,45 +11,53 @@ Análise de dados da rede social Twitter - Um trabalho prático de introdução 
 **Gitbook**: [Análise de dados da rede social Twitter](https://www.gitbook.com/book/franciscomoura/analise-de-dados-da-rede-social-twitter/details)
 
 ***
-[TOC]
-***
 
-# 1. Introdução
+# 1. Análise de dados da rede social Twitter
+
+## 1.1. Introdução
 
 Este trabalho é parte da disciplina **Banco de dados não relacionais**, cursada no Instituto de Educação Continuada (IEC) da PUC Minas, no curso de pós-graduação Ciência de dados e big data, no segundo semestre de 2016.
-O professor Grabriel Campos [GCOUTI] apresentou este desafio como introdução da disciplina.
-O trabalho prático foi desenvolvido com dados coletados na rede social Twitter, através das APIs de Streaming [STREAMING-API] .
+O professor Grabriel Campos ^[1] apresentou este desafio como uma introdução à disciplina.
+Os dados do conjunto de dados utilizado para a elaboração das análises foram coletado na rede social do Twitter.
 
-# 2. Contexto e aplicações
+## 1.2. Contexto e aplicações
 
 **Saúde pública** é uma área que demanda bastante atenção das instituições públicas ligadas ao Ministério da Saúde e autoridades políticas.
-Fatos como a discussão no senado federal brasileiro da *ementa que pretende regular a interrupção voluntária da gravidez, dentro das doze primeiras semanas de gestação, pelo sistema único de saúde*; *nova ameaça do vírus zika*; *crise econômica aumentando os casos de ansiedade e depressão* e outros de interesse da temática saúde pública são assuntos frequentemente comentados pelos usuários da rede social Twitter.
+Fatos como a discussão no senado federal brasileiro da ementa que pretende regular a interrupção voluntária da gravidez, dentro das doze primeiras semanas de gestação, pelo sistema único de saúde; nova ameaça do vírus zika; crise econômica aumentando os casos de ansiedade e depressão; e outros de interesse da temática saúde pública são assuntos comentados frequentemente pelos usuários da rede social Twitter.
 
-Com esta motivação, pretende-se, inicialmente, coletar um volume de tweets que permita gerar uma massa de dados para análise e que possa ser empregada uma arquitetura de big data para o processamento e análise dos dados.
-Assim, definiu-se que os tweets dos conjuntos de dados coletados sejam armazenados no banco de dados NoSQL MongoDB.
+Informações desta natureza são de interesse de vários atores da esfera pública.
 
-# 3. Metodologia e desenvolvimento do trabalho prático
+# 2. Metodologia e desenvolvimento do trabalho prático
 
-O trabalho prático foi desenvolvido com dados coletados na rede social do Twitter, conhecidos por tweets [KUMAR2014TWITTE] e [BONZANINI2016MASTERING].
-Foram utilizadas as linguagens de programação Python, JavaScript e Bash, e o banco de dados NoSQL MongoDB como componentes constituíntes da arquitetura do ambiente de análise de dados em grande quantidades.
+Foi definido que deveriam ser coletados um volume de pelo menos 1 milhão de tweets, para que pudesse gerar uma massa de dados para análise e que possibilitasse a utilização de uma arquitetura de big data para o processamento e análise destes dados.
+A API de Streaming ^[2] do Twitter disponibiliza uma maneira para a comunidade realizar a coleta de dados em tempo real.
+Esta foi a forma empregada para a obtenção do conjunto de dados.
 
-## 3.1. Coleta dos dados
+A organização do ambiente de coleta e processamento utilizou-se das linguagens de programação Python e JavaScript e o banco de dados NoSQL MongoDB. Estes são os componentes constituíntes da arquitetura do ambiente de análise capaz de lidar com a grande quantidade de dados.
+
+Assim, os tweets coletados foram armazenados no banco de dados NoSQL MongoDB para as fases de processamento e análise.
+
+## 2.1. Coleta dos dados
 
 Foram coletados um pouco mais de 1 milhão de tweets (1.083.884), entre os dias 30 de novembro/2016 e 21 de dezembro/2016, dando ênfase na temática "**Saúde pública**".
-Os termos utilizados para a coleta dos tweets são nomeados *tracker words*. 
-Os seguintes tracker words foram submetidos à API de Streaming para realizar a coleta dos tweets:
+Para recuperar os dados via API de Streaming do Twitter é necessário enviar as palavras de rastreamento dos tweets na consulta. Na denominação da API elas chamam-se *tracker words*.
+
+As palavras de rastremento utilizadas durante o processo de coleta foram:
 
 ```Python
-tracker_words = ['estupro', 'denúncia', 'vítima', 'abuso sexual', 'assédio sexual', 'violência sexual', 'dengue', 
-'gripe', 'resfriado', 'malária', 'febre', 'chikungunya', 'zika', 'vírus', 'mosquito', 'Aedes aegypti', 'depressão',
-'ansiedade']
+tracker_words = ['estupro', 'denúncia', 'vítima', 'abuso sexual', 
+				 'assédio sexual', 'violência sexual', 'dengue', 
+				 'gripe', 'resfriado', 'malária', 'febre', 'chikungunya', 
+				 'zika', 'vírus', 'mosquito', 'Aedes aegypti', 
+				 'depressão', 'ansiedade']
 ```
-`Código-fonte: src/crawler_tweets_saude_publica.py`
+`Arquivo de código-fonte: src/crawler_tweets_saude_publica.py`
 
-O código-fonte completo utilizado para a coleta dos tweets encontra-se disponível no github em [crawler\_tweets\_saude\_publica.py](https://github.com/franciscomoura/social-media-analysis/blob/master/src/crawler_tweets_saude_publica.py).
-Foi adotada a estratégia de salvar os dados em arquivos no formato JSON \(JavaScript Object Notation - Notação de objetos JavaScript\) no sistema de arquivos do sistema operacional, pelo fato dos dados recebidos já se encontrarem nesse formato e por permitir o acompanhamento da evolução da coleta utilizando comandos do bash em sistema Unix like, bem como monitorar a execução dos scripts python devido a limitação de conectividade de rede ou queda do serviço disponibilizado pelo Twitter, facilidade de importação para o banco de dados NoSQL MongoDB, armazenamento e reutilização \(data lake\) para trabalhos futuros.
+O código-fonte completo utilizado para a coleta dos tweets encontra-se disponível no github em [crawler_tweets_saude_publica.py](https://github.com/franciscomoura/social-media-analysis/blob/master/src/crawler_tweets_saude_publica.py).
 
-Com o comando **wc** \(contador de palavras, linhas, caracteres e bytes\) é possível acompanhar a evolução da coleta, por exemplo inspecionando o número de linhas contidas no arquivo.
+Foi adotada a estratégia de salvar os dados em arquivos no formato JSON (JavaScript Object Notation - Notação de objetos JavaScript) no sistema de arquivos do sistema operacional, pelo fato dos dados recebidos já se encontrarem nesse formato ^[4] e por permitir o acompanhamento da evolução da coleta utilizando comandos do bash em sistema Unix like, bem como monitorar a execução dos scripts python devido a limitação de conectividade de rede ou queda do serviço do Twitter, facilidade de importação para o banco de dados NoSQL MongoDB ^[4], armazenamento e reutilização (data lake) para trabalhos futuros.
+
+Com o comando **wc** (contador de palavras, linhas, caracteres e bytes) é possível acompanhar a evolução da coleta, por exemplo inspecionando o número de linhas contidas no arquivo.
 
 > ```bash
 > wc -l *.json
@@ -65,29 +73,32 @@ Com o comando **wc** \(contador de palavras, linhas, caracteres e bytes\) é pos
 > 1083884 total
 > ```
 
-## 3.2. Ingestão dos dados no MongoDB
+## 2.2. Ingestão dos dados no MongoDB
 
-A ingestão dos dados no banco MongoDB é realizada com extrema facilidade, visto que os dados contidos nos arquivos JSON estão no formato que o MongoDB utiliza em sua estrutura de armazenamento.
+A ingestão dos dados no banco MongoDB é realizada com extrema facilidade, visto que os dados contidos nos arquivos JSON estão no formato que o MongoDB utiliza em sua estrutura de armazenamento ^[6].
 
-Com o utilitário **mongoimport** os dados podem ser carregados para o processamento no MongoDB.
+Com o utilitário **mongoimport** os dados podem ser carregados para um banco de dados e uma coleção no MongoDB.
 
-> Comando e sintaxe:
+Comando e sintaxe:
 >
 > ```bash
 > mongoimport -d <db_name> -c <collection_name> --file <path/file_name>
->
-> Onde:
+> ```
+
+Onde: 
+> ```
 >    -d: nome da base de dados (esquema no modelo relacional)
 >    -c: nome da coleção (tabela no modelo relacional)
 > ```
 
-Para cada arquivo, o comando será:
+Assim, para cada arquivo, o comando será:
 
 > ```bash
-> mongoimport -d tweets_raw -c saude_coletiva --file tweets.saude.coletiva-xx.json
+> mongoimport -d tweets_raw -c saude_coletiva \
+> 			  --file tweets.saude.coletiva-xx.json
 > ```
 
-De forma a automatizar a importação utilizou-se um script shell \(_**[src/mongoimport.sh](https://github.com/franciscomoura/social-media-analysis/blob/master/src/mongoimport.sh)**_\), como segue:
+De forma a automatizar a importação utilizou-se um script shell (_**[src/mongoimport.sh](https://github.com/franciscomoura/social-media-analysis/blob/master/src/mongoimport.sh)**_), como segue:
 
 ```bash
 for file_name in $(ls -d tweets.saude.coletiva-*)
@@ -96,9 +107,9 @@ do
     mv $file_name "proc-$file_name"
 done
 ```
-`Código-fonte: src/mongoimport.sh`
+`Arquivo de código-fonte: src/mongoimport.sh`
 
-O funcionamento do script é tal que, após a ingestão dos dos no MongoDB, o arquivo é renomeado para indicar que foi processado e futuras re-execuções não duplique os dados na coleção armazenada no banco.
+O funcionamento do script é tal que após a ingestão dos dos no MongoDB, o arquivo é renomeado para indicar que foi processado e futuras re-execuções não duplique os dados na coleção armazenada no banco.
 
 Para averiguar o sucesso da ingestão dos tweets no MongoDB, utilizou-se os seguintes comandos:
 
@@ -116,13 +127,13 @@ Para averiguar o sucesso da ingestão dos tweets no MongoDB, utilizou-se os segu
 
 O resultado da execução destes dois comando devem ser idênticas, ou seja, o mesmo valor numérico.
 
-## 3.3. Otimização das consultas: Organização da coleção
+## 2.3. Otimização das consultas: Organização da coleção
 
-Visando otimizar o tempo de realização das consultas no MongoDB, convertemos o valor String do atributo "_created\_at_" em _**ISODate**_, o adicionamos em um novo atributo "_time\_stamp_" e atualizamos a coleção.
+Visando otimizar o tempo de realização das consultas no MongoDB, convertemos o valor String do atributo "*created_at*" em ***ISODate***, o adicionamos em um novo atributo "*time_stamp*" e atualizamos a coleção.
 
-Segundo \[KUMAR2014TWITTE\] o atributo "_created\_at_" e uma informação de data em formato legível para o ser humano. No entanto, realizar conversão a cada consulta adiciona um custo computacional desnecessário.
+Segundo KUMAR2014TWITTE o atributo "*created_at*" é uma informação de data em formato legível para o ser humano. No entanto, realizar conversão a cada consulta adiciona um custo computacional desnecessário.
 
-Com o código a seguir, realizou-se a operação de conversão e adição do novo atributo "_time\_stamp_" do tipo _**ISODate**_ \(_**[src/otimizar-colecao.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/otimizar-colecao.js)**_\) à coleção:
+Com o código a seguir, realizou-se a operação de conversão e adição do novo atributo "*time_stamp*" do tipo ***ISODate*** (***[src/otimizar-colecao.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/otimizar-colecao.js)***) à coleção:
 
 ```js
 db.saude_coletiva.find().forEach(function(doc){
@@ -133,21 +144,19 @@ db.saude_coletiva.find().forEach(function(doc){
     db.saude_coletiva.save(doc);
 });
 ```
-`Código-fonte: src/otimizar-colecao.js`
+`Arquivo de código-fonte: src/otimizar-colecao.js` foi adaptado de KUMAR2014TWITTE.
 
 Este arquivo pode ser invocado e executado diretamente no shell MongoDB com o seguinto comando:
 
 > ```js
-> load("/path/src/02-otimizar-colecao.js")
+> load("/path/src/otimizar-colecao.js")
 > ```
-
-Consulte o apêndice para mais detalhes.
 
 Com esta operação realizou-se a primeira etapa necessária para a otimização das consultas.
 
-Vejamos os resultados comparativos do tempo de execução de uma das principais consultas que serão submetidas ao MongoDB para extração de resultados. A consulta é do tipo agregação \(db.collection.aggregate\(\)\).
+Vejamos os resultados comparativos do tempo de execução de uma das principais consultas que serão submetidas ao MongoDB para extração de resultados. A consulta é do tipo agregação `(db.collection.aggregate())`.
 
-##### 2.3.1. Consulta volume por dia no atributo time\_stamp do tipo ISODate
+### 2.3.1. Consulta volume por dia no atributo time_stamp
 
 ```js
 db.saude_coletiva.aggregate([
@@ -168,25 +177,26 @@ db.saude_coletiva.aggregate([
 ```
 `Arquivo de código-fonte: src/volume-tweets-dia-timestamp.js`
 
-A consulta acima ([volume-tweets-dia-timestamp.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/volume-tweets-dia-timestamp.js)) utiliza o atributo _time\_stamp_ criado especialmente para otimizar o tempo de execução das operações computacionais no MongoDB. Veja abaixo o coparativo entre a consulta que utiliza o atributo previamente preparado \(time\_stamp\) com a consulta que utiliza o atributo do tipo String \(created\_at\).
+A consulta acima ([volume-tweets-dia-timestamp.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/volume-tweets-dia-timestamp.js)) utiliza o atributo *time_stamp* criado especialmente para otimizar o tempo de execução das operações computacionais no MongoDB. Veja abaixo o coparativo entre a consulta que utiliza o atributo *time\_stamp* com a consulta que utiliza o atributo do tipo string *created\_at*.
 
-Para obter a informação do tempo de execução de uma consulta do tipo _**db.collection.aggregate**_ é necessário procurar no log de execução do _deamon_ _mongod_ por `protocol:op_command XXms`.
+Para obter a informação do tempo de execução de uma consulta do tipo _**db.collection.aggregate**_ é necessário procurar no log de execução do _deamon_ _mongod_ por ==*protocol:op_command XXms*==.
 
 **Log do deamon mongod:**
 
 > ```bash
 > command tweets_raw.saude_coletiva appName: "MongoDB Shell" command: 
->     aggregate { aggregate: "saude_coletiva", 
->     pipeline: [ { $group: { _id: { time_stamp: { ano: { $year: "$time_stamp" }, 
->     mes: { $month: "$time_stamp" }, dia: { $dayOfMonth: "$time_stamp" } } }, 
->     total: { $sum: 1.0 } } }, { $sort: { _id: 1.0 } } ], cursor: {} } 
->     planSummary: COLLSCAN keysExamined:0 docsExamined:1083884 hasSortStage:1 cursorExhausted:1 
->     numYields:8566 nreturned:23 reslen:1882 
->     locks:{ Global: { acquireCount: { r: 17160 } }, Database: { acquireCount: { r: 8580 } }, 
->     Collection: { acquireCount: { r: 8579 } } } protocol:op_command 3809ms
+> aggregate { aggregate: "saude_coletiva", pipeline: [ { $group: { _id: 
+> { time_stamp: { ano: { $year: "$time_stamp" }, mes: { $month: 
+> "$time_stamp" }, dia: { $dayOfMonth: "$time_stamp" } } }, total: 
+> { $sum: 1.0 } } }, { $sort: { _id: 1.0 } } ], cursor: {} } 
+> planSummary: COLLSCAN keysExamined:0 docsExamined:1083884 
+> hasSortStage:1 cursorExhausted:1 numYields:8566 nreturned:23 
+> reslen:1882 locks:{ Global: { acquireCount: { r: 17160 } }, 
+> Database: { acquireCount: { r: 8580 } }, Collection: { acquireCount: 
+> { r: 8579 } } } protocol:op_command 3809ms
 > ```
 
-##### 2.3.2. Consulta volume por dia no atributo created\_at do tipo String
+### 2.3.2. Consulta volume por dia no atributo created_at
 
 ```js
 db.saude_coletiva.aggregate([
@@ -217,25 +227,27 @@ db.saude_coletiva.aggregate([
 
 Esta consulta ([volume-tweets-dia-created_at.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/volume-tweets-dia-created_at.js)) foi utilizada somente com o objetivo de gerar um comparativo de tempo de execução entre a consulta anterior.
 
-Como explanado anteriormente, é preciso consultar o log do daemon da engine do MongoDB para obter o tempo de execução, olhando o atributo ``protocol:op_command.
+Como mencionado previamente, é preciso consultar o log do daemon da engine do MongoDB para obter o tempo de execução, olhando o atributo ==*protocol:op_command*==.
 
 **Log do deamon mongod:**
 
 > ```bash
 > command tweets_raw.saude_coletiva appName: "MongoDB Shell" command: 
->     aggregate { aggregate: "saude_coletiva", 
->     pipeline: [ { $match: { $or: [ { created_at: { $in: [ /Nov/ ] } }, 
->     { created_at: { $in: [ /Dec/ ] } } ] } }, 
->     { $group: { _id: { ano: { $substr: [ "$created_at", 26.0, 4.0 ] }, 
->     mes: { $substr: [ "$created_at", 4.0, 3.0 ] }, dia: { $substr: [ "$created_at", 8.0, 2.0 ] } }, 
->     total: { $sum: 1.0 } } }, { $sort: { _id: 1.0 } } ], cursor: {} } 
->     planSummary: COLLSCAN keysExamined:0 docsExamined:1083884 hasSortStage:1 cursorExhausted:1 
->     numYields:8659 nreturned:22 reslen:1694 locks:{ Global: { acquireCount: { r: 17352 } }, 
->     Database: { acquireCount: { r: 8676 } }, Collection: { acquireCount: { r: 8675 } } } 
->     protocol:op_command 7183ms
+> aggregate { aggregate: "saude_coletiva", pipeline: [ { $match: { $or: 
+> [ { created_at: { $in: [ /Nov/ ] } }, { created_at: { $in: [ /Dec/ ] 
+> } } ] } }, { $group: { _id: { ano: { $substr: [ "$created_at", 26.0, 
+> 4.0 ] }, mes: { $substr: [ "$created_at", 4.0, 3.0 ] }, dia: { 
+> $substr: [ "$created_at", 8.0, 2.0 ] } }, total: { $sum: 1.0 } } }, 
+> { $sort: { _id: 1.0 } } ], cursor: {} } planSummary: COLLSCAN 
+> keysExamined:0 docsExamined:1083884 hasSortStage:1 cursorExhausted:1  
+> numYields:8659 nreturned:22 reslen:1694 locks:{ Global: { 
+> acquireCount: { r: 17352 } }, Database: { acquireCount: 
+> { r: 8676 } }, Collection: { acquireCount: { r: 8675 } } } 
+> protocol:op_command 7183ms
 > ```
 
-##### 2.3.3. Comparativo do tempo de execução entre objetos do tipo ISODate e String
+### 2.3.3. Comparativo do tempo de execução das consultas sem indexação
+O quadro abaixo é um comparativo dos tempos de execução das consultas nos atributos time\_stap e created\_at, objetos do tipo ISODate e String, respectivamente, sem indexação dos referidos atributos.
 
 | Consulta - sem utilização de indice | Ordenação | Tempo de execução |
 | :--- | :--- | :--- |
@@ -244,29 +256,31 @@ Como explanado anteriormente, é preciso consultar o log do daemon da engine do 
 | Atributo time\_stamp, tipo ISODate | Descendente | 5.412 ms |
 | Atributo created\_at, tipo String | Descendente | 5.571 ms |
 
-Como esperado, as consultas que utilizam o atributo auxiliar time_stamp apresentou melhor desempenho no comparativo com o atributo created_at.
+Como esperado, as consultas que utilizam o atributo auxiliar time\_stamp apresentou melhor desempenho no comparativo com o atributo created\_at.
 
 ## 2.4. Otimização das consultas: Criação de índices
 
 Um segundo procedimento necessário para completar a otimização das consultas para o cenário da análise dos dados é a criação de um índice para o atributo time\_stamp e outro índice para o atributo created\_at.
 
 A criação de índices se faz necessária para evitar a execução padrão das consultas, que comumente são mais demoradas porque executam leitura sobre todos os dados da coleção. Os índices, se bem utilizados, tornam o tempo de execução das consultas melhores porque não são lidos todos os dados da coleção, ou permite que o MongoDB utilize melhores estratégias para execução da consulta submetida.  
-Com o comando `db.collection.createIndex()` foi criado o índice do tipo Ascendente \(ordenando as datas na ordem da menor para a maior\) para o atributo time\_stamp:
+Com o comando `db.collection.createIndex()` no shell do MongoDB foi criado o índice do tipo Ascendente \(ordenando as datas na ordem da menor para a maior\) para o atributo time\_stamp:
 
-```bash
+```js
 > db.saude_coletiva.createIndex({time_stamp: 1})
 ```
 
 E para o atributo created\_at:
 
-```bash
+```js
 > db.saude_coletiva.createIndex({created_at: "text"})
 ```
 `Arquivo de código-fonte: src/criar-indices.js`
 
-A criação do índice para o atributo created\_at foi diferente porque o MongoDB permite criar o índice do tipo `text` e, assim, realizar buscas dentro da string indexada ([src/criar-indices.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/criar-indices.js)).
+A criação do índice para o atributo created\_at é diferente porque o MongoDB permite criar o índice do tipo `text` e, assim, realizar buscas dentro da string indexada ([src/criar-indices.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/criar-indices.js)).
 
-Vejamos os resultados comparativos da execução da mesmas consultas de agregação utilizadas na seção anterior:
+### 2.4.1. Comparativo do tempo de execução das consultas com indexação
+
+Vejamos os resultados comparativos da execução da mesmas consultas de agregação utilizadas na seção anterior.
 
 | Consulta - com utilização de índice | Ordenação | Tempo de execução |
 | :--- | :--- | :--- |
@@ -275,13 +289,13 @@ Vejamos os resultados comparativos da execução da mesmas consultas de agregaç
 | Atributo time\_stamp, tipo ISODate | Ascendente | 3.931 ms |
 | Atributo created\_at, tipo String | Ascendente | 3.670 ms |
 
-Como esperado, com a utilização de índices o desempenho do tempo de realização das consultas é melhorado.
+Como esperado, com a utilização de atributos indexados, o desempenho do tempo de realização das consultas é melhorado.
 
 ## 2.5. Pré-processamento de texto
 
 Para calcular a frequência das palavras contidas nos tweets, optou-se pelo uso da linguagem Python para realizar o pré-processamento do texto. Esta etapa consiste na remoção de caracteres de pontuação, artigos, caracteres de controle de fim de linha, etc, produzindo os termos, que são as palavras para análise.  
-Python, através da biblioteca NLTK e normalizr, oferece bom suporte para esta atividade, produzir os termos, que consiste em separar cada palavras do texto em palavras independentes.  
-Ainda, a biblioteca NLTK oferece suporte para processar adequadamente os temos como hastag, usuários mencionados nos textos dos tweets, ou seja, estes termos não são descartados e são incluídos no processo de análise.
+Python, através da biblioteca `NLTK` e `normalizr`, oferece bom suporte para esta atividade, produzir os termos, que consiste em separar cada palavras do texto em palavras independentes.  
+Ainda, a biblioteca NLTK disponibiliza o `TweetTokenizer`, que oferece suporte para processar adequadamente os temos como hastag, usuários mencionados nos textos dos tweets, ou seja, estes termos não são descartados e são incluídos no processo de análise.
 
 Os termos produzidos foram armazenados em uma nova coleção no MongoDB, de forma que pode-se aplicar quaisquer funções \(Map/Reduce ou Aggregate\) para avaliar a ocorrência das palavras no conjunto de dados coletados.
 
@@ -464,7 +478,9 @@ Os 10 primeiros resultados ordenados obtidos são mostrados abaixo. A ordenaçã
 
 ## 3.3. Termos mais frequentes
 
-Esta análise utilizou o conjunto de dados \(termos\) produzidos na fase de pré-processamento do texto de cada tweet. Delegou-se a realização desta atividade para o MongoDB porque as bibliotecas da linguagem Python, embora possuam poderosas implementações para esta tarefa, não processaria rapidamente a o grande volume de termos que o conjunto de dados possue.
+Esta análise utilizou o conjunto de dados produzido na fase de pré-processamento do texto de cada tweet. Delegou-se a realização desta atividade para o MongoDB porque as bibliotecas da linguagem Python, embora possuam poderosas implementações para esta tarefa, não processaria rapidamente o grande volume de termos que o conjunto de dados possue.
+
+Este tipo de processamento pode ser feito também por map/reduce. Porém, utilizou-se `db.collection.aggregate()` pela simplicidade. O código-fonte completo pode ser visto aqui[termos-mais-frequentes.js](https://github.com/franciscomoura/social-media-analysis/blob/master/src/termos-mais-frequentes.js).
 
 ```js
 db.tweet_terms.aggregate([
@@ -477,6 +493,7 @@ db.tweet_terms.aggregate([
     }
 )
 ```
+`Arquivo do código-fonte: src/termos-mais-frequentes.js`
 
 Os 10 termos mais frequentes encontrados em todo o conjunto de são mostrados abaixo:
 
@@ -505,8 +522,17 @@ Os 10 termos mais frequentes encontrados em todo o conjunto de são mostrados ab
 
 # 4. Conclusões e trabalhos futuros
 
-Não restam dúvidas de que as redes sociais fornecem uma forma nova de produzir e consumir informações. Redes sociais, como o Twitter, disponibilizam gratuitamente um certo volume dos dados públicos que são gerados e compartilhados a cada instante pelos usuários participantes da rede.  
-Embora haja uma avalanche de informações sendo geradas, certos desafios precisam ser superados para uma efetiva coleta e qualidade dos dados.  
+Não restam dúvidas de que as redes sociais fornecem uma forma nova de produzir e consumir informações. Redes sociais, como o Twitter, disponibilizam gratuitamente um certo volume dos dados públicos que são gerados e compartilhados a cada instante pelos usuários participantes da rede.
+
+Embora haja uma avalanche de informações sendo geradas, certos desafios precisam ser superados para uma efetiva coleta e qualidade dos dados.
+O primeiro desafio é determinar o que será coletado. Dada a variedade e velocidade do conteúdo publicado, pode-se demorar obter a quantidade de dados necessários para o trabalho de análise.
+O segundo desafio é a coleta dos dados pretendidos. A regulamentação da coleta dos dados pela organização gestora da rede social e as condições envolvendo a rede de comunicação de dados \(internet\) são pontos de atenção a serem contornados.
+O terceiro desafio é conhecer a estrutura, o tipo do dado que é disponibilizado para coleta.
+
+Para superar parte dos desafios é necessário mergulhar na leitura e estudos das APIs \(Applications Programming Interfaces - Interface de Programação de Aplicativos\) que as redes sociais disponibilizam, bem como conhecer trabalhos prévios públicados pela comunicade. Contar com o apoio da comunidade é de fundamental relevância para o bom desenvolvimento do trabalho prático, visto que há várias ferramentas e bibliotecas sendo desenvolvidas para endereçar os desafios que surgem.
+
+
+----  
 O primeiro desafio é a coleta dos dados pretendidos. Devido às restrições da política de uso da organização gestora da rede social, a forma como estes dados podem ser coletados, bem como os desafios envolvendo a rede de comunicação de dados \(internet\).  
 O segundo desafio é conhecer a estrutura, o tipo do dado que é disponibilizado para coleta.  
 E um terceiro desafio é determinar o que será coletado, embora dada a variedade do que se produz, pode-se demorar obter a quantidade de dados desejada para o trabalho de análise.  
@@ -534,11 +560,7 @@ Neste trabalho, pode averiguar
 ## 1. Projeto no github
 [social-media-analysis](https://github.com/franciscomoura/social-media-analysis)
 
-## 2. Datasets
-Os conjuntos de dados utilizados neste trabalho podem ser baixados através do seguinte link:
-[datasets-tweets-saude-publica](https://www.dropbox.com/s/hr90f2mhsfv1zmf/datasets-tweets-saude-publica.zip?dl=0)
-
-## 3. Script _src/mongoimport.sh_
+## 2. Script _src/mongoimport.sh_
 
 Tornar o script executável. No terminal bash do sistema operacional execute o comando:
 
@@ -552,7 +574,7 @@ No terminal bash do sistema operacional execute o script sob o diretório src/ c
 > sh 01-mongoimport.sh
 > ```
 
-## 4. Script src/otimizar-colecao.js
+## 3. Script src/otimizar-colecao.js
 
 No shell do MongoDB execute o seguinte comando:
 
